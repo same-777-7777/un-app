@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運貯めアプリ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FFEB3B;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            color: #FF1744;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+            margin-bottom: 20px;
+        }
+        .un-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 360px;
+        }
+        .un-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .un-circle {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, #ffb74d, #ff9800);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #d32f2f;
+            font-size: 42px;
+            font-weight: bold;
+        }
+        .un-date {
+            margin-top: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">今月の運</div>
+    <div class="un-grid" id="unGrid"></div>
+
+<script>
+    const unGrid = document.getElementById('unGrid');
+    let unList = JSON.parse(localStorage.getItem('unList')) || [];
+
+    function addUn() {
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const date = now.getDate();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        const timeString = `${month}/${date} ${hours}:${minutes}`;
+        unList.unshift(timeString);
+        localStorage.setItem('unList', JSON.stringify(unList));
+    }
+
+    function renderUnList() {
+        unGrid.innerHTML = "";
+        unList.forEach(time => {
+            const item = document.createElement('div');
+            item.className = 'un-item';
+            item.innerHTML = `
+                <div class="un-circle">運</div>
+                <div class="un-date">${time}</div>
+            `;
+            unGrid.appendChild(item);
+        });
+    }
+
+    addUn();
+    renderUnList();
+</script>
+
+</body>
+</html>
