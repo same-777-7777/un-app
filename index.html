@@ -51,17 +51,33 @@
             font-weight: bold;
             color: #333;
         }
+        /* リセットボタンのスタイル */
+        .clear-btn {
+            margin-top: 30px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">今月の運</div>
     <div class="un-grid" id="unGrid"></div>
+    
+    <button class="clear-btn" onclick="clearUn()">データをリセット</button>
 
 <script>
     const unGrid = document.getElementById('unGrid');
+    
+    // スマホに保存されている過去のデータを読み込む
     let unList = JSON.parse(localStorage.getItem('unList')) || [];
 
+    // 運を追加する関数
     function addUn() {
         const now = new Date();
         const month = now.getMonth() + 1;
@@ -70,10 +86,13 @@
         const minutes = String(now.getMinutes()).padStart(2, '0');
         
         const timeString = `${month}/${date} ${hours}:${minutes}`;
-        unList.unshift(timeString);
+        
+        // 過去のデータに新しい運を「追加」する（上書きしない）
+        unList.push(timeString);
         localStorage.setItem('unList', JSON.stringify(unList));
     }
 
+    // 画面に運の一覧を表示する関数
     function renderUnList() {
         unGrid.innerHTML = "";
         unList.forEach(time => {
@@ -87,8 +106,18 @@
         });
     }
 
-    addUn();
-    renderUnList();
+    // データを全部消す関数
+    function clearUn() {
+        if(confirm("貯まった運をすべてリセットしますか？")) {
+            localStorage.removeItem('unList');
+            unList = [];
+            renderUnList();
+        }
+    }
+
+    // 動かす
+    addUn();         // 読み込むたびに1個増える
+    renderUnList();  // 増えた状態の一覧を表示する
 </script>
 
 </body>
